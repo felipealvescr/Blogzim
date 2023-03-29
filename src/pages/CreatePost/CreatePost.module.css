@@ -1,6 +1,6 @@
-.register { text-align:center; height: 600px; }
+.create { text-align:center; height: 600px; }
 
-.register p { color: #aaaaaa; }
+.create p { color: #aaaaaa; }
 
 input::placeholder, textarea::placeholder { font-family: "Montserrat", sans-serif; }
 

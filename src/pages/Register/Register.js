@@ -3,6 +3,8 @@ import styles from './Register.module.css'
 
 // MEUS IMPORTS
 import { useState, useEffect } from 'react'
+import { useAuthentication } from '../../hooks/useAuthentication'
+import { wait } from '@testing-library/user-event/dist/utils'
 
 const Register = () => {
   const [displayName, setDisplayName] = useState ("")
@@ -11,7 +13,9 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState ("")
   const [error, setError] = useState ("")
 
-  const handleSubmit = (e) => {
+  const { createUser, error: authError, loading } = useAuthentication()
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
 
@@ -21,13 +25,20 @@ const Register = () => {
       setError("As suas senhas precisam estar idênticas.")
       return
     }
-    console.log(user)
-  }
-  
 
+    const res = await createUser(user)
+  
+  }
+
+  useEffect (() => {
+    if (authError) {
+      setError(authError)
+    }
+  }, [authError])
+  
   return (
     <div className={ `${styles.register} container`}>
-        <h1>Cadastre-se para postar seu conteúdo</h1>
+        <h1>Cadastre-se para postar seu conteúdos</h1>
         <p>Crie seu usuário e compartilhe suas histórias.</p>
         <form onSubmit={ handleSubmit }>
           <label>
@@ -46,7 +57,8 @@ const Register = () => {
             <span>Confirmação Senha: </span>
             <input type="password" name='onfirmPassword' required placeholder='Confirme a sua senha' value={ confirmPassword } onChange={ (e) => setConfirmPassword(e.target.value) }/>
           </label>
-          <button className='btn btn-success my-4'>Cadastrar</button>
+          { !loading && <button className='btn btn-success my-4'>Cadastrar</button>}
+          { loading && <button className='btn btn-success my-4'>Aguarde...</button>}
           { error && <p className={`${styles.error} text-danger fw-bold`}>{ error }</p>}
         </form>
     </div>
